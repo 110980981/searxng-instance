@@ -19,10 +19,13 @@ if exist "%SCRIPT_DIR%.env" (
 
 REM 替换 __SERPER_API_KEY__ 占位符，生成解析后的配置文件
 echo [SearXNG Paid] 生成运行时配置...
-powershell -Command "^
-    $content = Get-Content '%CONFIG_FILE%' -Raw; ^
-    $content = $content -replace '__SERPER_API_KEY__', $env:SERPER_API_KEY; ^
-    Set-Content -Path '%RESOLVED_CONFIG%' -Value $content -Encoding UTF8"
+powershell -Command "$c=Get-Content '%CONFIG_FILE%' -Raw; $c=$c -replace '__SERPER_API_KEY__', $env:SERPER_API_KEY; Set-Content -Path '%RESOLVED_CONFIG%' -Value $c -Encoding UTF8"
+
+if %ERRORLEVEL% neq 0 (
+    echo [SearXNG Paid] 配置生成失败
+    pause
+    exit /b 1
+)
 
 REM 尝试 Docker 启动
 where docker >nul 2>&1
@@ -30,7 +33,11 @@ if %ERRORLEVEL% equ 0 (
     echo [SearXNG Paid] 通过 Docker 启动...
     cd /d "%SCRIPT_DIR%"
     docker compose --profile paid up -d
-    echo [SearXNG Paid] 启动完成: http://localhost:8889
+    if %ERRORLEVEL% equ 0 (
+        echo [SearXNG Paid] 启动完成: http://localhost:8889
+    ) else (
+        echo [SearXNG Paid] Docker 启动失败
+    )
     goto :end
 )
 
