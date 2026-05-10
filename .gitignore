@@ -1,0 +1,20 @@
+# 环境变量（含 API Key）
+.env
+
+# SearXNG 作为外部依赖引入，不纳入本仓库
+# 请单独克隆: git clone https://github.com/searxng/searxng.git ../searxng
+/searxng/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Docker
+docker-data/
+
+# 系统
+.DS_Store
+Thumbs.db

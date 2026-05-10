@@ -1,0 +1,59 @@
+# SearXNG Instance - 双模式启动配置
+#
+# 免费模式（仅免费 API）:
+#   docker compose --profile free up -d
+#
+# 付费模式（免费 + 付费 API）:
+#   docker compose --profile paid up -d
+#
+# 环境变量配置:
+#   复制 .env.example 为 .env，填写对应 API Key
+
+services:
+
+  searxng-free:
+    image: searxng/searxng:latest
+    profiles: ["free"]
+    container_name: searxng-free
+    restart: unless-stopped
+    ports:
+      - "8888:8080"
+    volumes:
+      - ./config/settings-free.yml:/etc/searxng/settings.yml:ro
+      - searxng-free-data:/etc/searxng
+    environment:
+      - SEARXNG_BASE_URL=http://localhost:8888/
+      - SEARXNG_SECRET=${SEARXNG_SECRET:-changeme}
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+
+  searxng-paid:
+    image: searxng/searxng:latest
+    profiles: ["paid"]
+    container_name: searxng-paid
+    restart: unless-stopped
+    ports:
+      - "8889:8080"
+    volumes:
+      - ./config/settings-paid.yml:/etc/searxng/settings.yml:ro
+      - searxng-paid-data:/etc/searxng
+    environment:
+      - SEARXNG_BASE_URL=http://localhost:8889/
+      - SEARXNG_SECRET=${SEARXNG_SECRET:-changeme}
+      # 付费 API Key 通过 .env 传入
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
+      - BING_API_KEY=${BING_API_KEY:-}
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+
+volumes:
+  searxng-free-data:
+  searxng-paid-data:

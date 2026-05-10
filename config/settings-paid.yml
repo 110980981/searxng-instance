@@ -1,0 +1,204 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# SearXNG Paid Mode - 免费引擎 + 付费 API 引擎
+#
+# 使用方式:
+#   export SEARXNG_SETTINGS_PATH=/path/to/settings-paid.yml
+#   python -m searx.webapp
+#
+# 付费引擎需要配置 API Key，请参考各引擎文档获取：
+#   - Google Custom Search: https://developers.google.com/custom-search/v1/overview
+#   - Bing Search: https://www.microsoft.com/en-us/bing/apis
+#   - YouTube Data API: https://developers.google.com/youtube/v3
+
+use_default_settings: true
+
+general:
+  instance_name: "SearXNG (Paid)"
+  enable_metrics: true
+  debug: false
+
+server:
+  port: 8888
+  bind_address: "0.0.0.0"
+  secret_key: "ultrasecretkey"  # 请通过 SEARXNG_SECRET 环境变量覆盖
+  limiter: false
+  image_proxy: true
+  method: POST
+
+search:
+  safe_search: 0
+  autocomplete: ""
+  default_lang: "auto"
+  formats:
+    - html
+
+ui:
+  default_theme: simple
+  default_locale: ""
+  theme_args:
+    simple_style: auto
+  hotkeys: default
+
+outgoing:
+  request_timeout: 3.0
+  pool_connections: 100
+  pool_maxsize: 20
+  enable_http2: true
+
+engines:
+
+  # ================================================================
+  # 移除不适用的引擎（种子、区域性引擎等）
+  # ================================================================
+  - name: piratebay
+    disabled: true
+  - name: kickass
+    disabled: true
+  - name: solidtorrents
+    disabled: true
+  - name: 1337x
+    disabled: true
+  - name: btdigg
+    disabled: true
+  - name: nyaa
+    disabled: true
+  - name: tokyotoshokan
+    disabled: true
+  - name: baidu
+    disabled: true
+  - name: baidu images
+    disabled: true
+  - name: sogou
+    disabled: true
+  - name: sogou images
+    disabled: true
+  - name: sogou videos
+    disabled: true
+  - name: sogou wechat
+    disabled: true
+  - name: yandex
+    disabled: true
+  - name: yandex images
+    disabled: true
+
+  # ================================================================
+  # 启用默认禁用但免费好用的引擎
+  # ================================================================
+  - name: duckduckgo images
+    disabled: false
+  - name: duckduckgo videos
+    disabled: false
+  - name: duckduckgo news
+    disabled: false
+  - name: duckduckgo weather
+    disabled: false
+  - name: qwant images
+    disabled: false
+  - name: qwant videos
+    disabled: false
+  - name: qwant news
+    disabled: false
+  - name: wikibooks
+    disabled: false
+  - name: wikiquote
+    disabled: false
+  - name: wikisource
+    disabled: false
+  - name: wikiversity
+    disabled: false
+  - name: wikivoyage
+    disabled: false
+  - name: wiby
+    disabled: false
+  - name: mozhi
+    disabled: false
+  - name: artic
+    disabled: false
+  - name: openlibrary
+    disabled: false
+  - name: pixabay images
+    disabled: false
+  - name: peertube
+    disabled: false
+    categories: videos
+  - name: rumble
+    disabled: false
+    categories: videos
+
+  # ================================================================
+  # 付费 API 引擎（需要配置 API Key）
+  # ================================================================
+
+  # --- Google Custom Search API (付费) ---
+  # 相比默认的 Google 抓取更稳定、更快速
+  # 文档: https://developers.google.com/custom-search/v1/overview
+  - name: google
+    engine: google
+    disabled: false
+    # 可选: 使用 API 提升稳定性
+    # google_api_key: !ENV ${GOOGLE_API_KEY}
+    # google_engine_id: !ENV ${GOOGLE_ENGINE_ID}
+
+  # --- Bing Web Search API (付费) ---
+  # 相比默认禁用 bing 抓取，用官方 API 替代
+  - name: bing
+    engine: bing
+    disabled: false
+    # bing_api_key: !ENV ${BING_API_KEY}
+
+  # --- YouTube Data API (付费) ---
+  # 需要 Google API Key
+  - name: youtube_api
+    engine: youtube_api
+    disabled: false
+    categories: videos
+    shortcut: yta
+    api_key: ''  # 设置你的 YouTube API Key
+
+  # --- WolframAlpha API (付费/有免费额度) ---
+  - name: wolframalpha_api
+    engine: wolframalpha_api
+    disabled: false
+    categories: general
+    shortcut: waa
+    api_key: ''  # 设置你的 WolframAlpha API Key
+
+  # --- Deepl API (付费/有免费额度) ---
+  - name: deepl
+    engine: deepl
+    disabled: false
+    shortcut: dpl
+    api_key: ''  # 设置你的 DeepL API Key
+
+  # --- Flickr API (需要 API Key) ---
+  - name: flickr_api
+    engine: flickr
+    disabled: false
+    categories: images
+    shortcut: fla
+    api_key: ''  # 设置你的 Flickr API Key
+
+  # --- 搜索引擎 API ---
+  - name: mojeek
+    engine: mojeek
+    disabled: false
+    categories: [general, web]
+
+  - name: yep
+    engine: yep
+    disabled: false
+    categories: general
+    search_type: web
+    timeout: 15
+
+  - name: yep images
+    engine: yep
+    disabled: false
+    categories: images
+    search_type: images
+
+  - name: yep news
+    engine: yep
+    disabled: false
+    categories: news
+    search_type: news
