@@ -24,9 +24,9 @@ restart-free: stop free
 restart-paid: stop paid
 
 # === 本地开发模式（需要先安装 SearXNG 依赖）===
-# 假设 searxng 仓库克隆在 ../searxng 目录
+# 假设 searxng 仓库存放在 ./searxng 目录
 
-SEARXNG_DIR ?= ../searxng
+SEARXNG_DIR ?= searxng
 FREE_CONFIG := $(shell pwd)/config/settings-free.yml
 PAID_CONFIG := $(shell pwd)/config/settings-paid.yml
 

@@ -6,6 +6,7 @@
 
 ```
 searxng-instance/
+├── searxng/               # SearXNG 源码（外部依赖）
 ├── start-free.sh         # 免费模式启动 (Bash)
 ├── start-free.bat        # 免费模式启动 (Windows)
 ├── start-paid.sh         # 付费模式启动 (Bash)
@@ -24,11 +25,10 @@ searxng-instance/
 
 ### 1. SearXNG（外部依赖）
 
-SearXNG 作为外部依赖引入，需要先克隆到同级目录：
+SearXNG 作为外部依赖引入，已包含在项目目录中：
 
 ```bash
-cd ..
-git clone https://github.com/searxng/searxng.git
+git submodule add https://github.com/searxng/searxng.git
 ```
 
 或通过 Docker 使用官方镜像（无需本地克隆）。
@@ -36,7 +36,7 @@ git clone https://github.com/searxng/searxng.git
 ### 2. Python 依赖（本地开发模式）
 
 ```bash
-cd ../searxng
+cd searxng
 pip install -r requirements.txt
 pip install -r requirements-dev.txt
 ```

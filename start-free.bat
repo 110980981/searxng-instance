@@ -19,7 +19,7 @@ if %ERRORLEVEL% equ 0 (
 
 REM 本地 Python 启动
 echo [SearXNG Free] 通过本地 Python 启动...
-set SEARXNG_DIR=%SCRIPT_DIR%..\searxng
+set SEARXNG_DIR=%SCRIPT_DIR%searxng
 if not exist "%SEARXNG_DIR%" (
     echo 错误: 未找到 SearXNG 代码目录 (%SEARXNG_DIR%)
     pause

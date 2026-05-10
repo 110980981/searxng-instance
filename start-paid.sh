@@ -28,10 +28,10 @@ echo "[SearXNG Paid] 通过本地 Python 启动..."
 export SEARXNG_SETTINGS_PATH="$CONFIG_FILE"
 export SEARXNG_SECRET="${SEARXNG_SECRET:-ultrasecretkey}"
 
-SEARXNG_DIR="$SCRIPT_DIR/../searxng"
+SEARXNG_DIR="$SCRIPT_DIR/searxng"
 if [ ! -d "$SEARXNG_DIR" ]; then
     echo "错误: 未找到 SearXNG 代码目录 ($SEARXNG_DIR)"
-    echo "请确保 searxng 仓库克隆在 ../searxng 位置"
+    echo "请确保 searxng 仓库存放在 ./searxng 位置"
     exit 1
 fi
 
