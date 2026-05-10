@@ -6,13 +6,13 @@ REM 使用方式: start-paid.bat
 set SCRIPT_DIR=%~dp0
 set CONFIG_FILE=%SCRIPT_DIR%config\settings-paid.yml
 set SEARXNG_SETTINGS_PATH=%CONFIG_FILE%
-set SEARXNG_SECRET=%SEARXNG_SECRET:ultrasecretkey%
+if not defined SEARXNG_SECRET set SEARXNG_SECRET=ultrasecretkey
 
-REM 加载 .env
+REM 加载 .env（跳过注释和空行）
 if exist "%SCRIPT_DIR%.env" (
     echo [SearXNG Paid] 加载 .env 环境变量...
-    for /f "usebackq tokens=1* delims==" %%a in ("%SCRIPT_DIR%.env") do (
-        if not "%%a"=="" if "%%a"=="%%a" set "%%a=%%b"
+    for /f "usebackq tokens=1* delims==" %%a in (`type "%SCRIPT_DIR%.env" ^| findstr /b /v "#" ^| findstr .`) do (
+        set "%%a=%%b"
     )
 )
 

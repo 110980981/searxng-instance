@@ -6,7 +6,7 @@ REM 使用方式: start-free.bat
 set SCRIPT_DIR=%~dp0
 set CONFIG_FILE=%SCRIPT_DIR%config\settings-free.yml
 set SEARXNG_SETTINGS_PATH=%CONFIG_FILE%
-set SEARXNG_SECRET=%SEARXNG_SECRET:ultrasecretkey%
+if not defined SEARXNG_SECRET set SEARXNG_SECRET=ultrasecretkey
 
 REM 尝试 Docker 启动
 where docker >nul 2>&1

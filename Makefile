@@ -30,6 +30,13 @@ SEARXNG_DIR ?= searxng
 FREE_CONFIG := $(shell pwd)/config/settings-free.yml
 PAID_CONFIG := $(shell pwd)/config/settings-paid.yml
 
+# === 安全相关 ===
+
+setup:
+	@githooks/setup-hooks.sh
+
+# === 本地开发模式（需要先安装 SearXNG 依赖）===
+
 free-dev:
 	SEARXNG_SETTINGS_PATH=$(FREE_CONFIG) \
 	cd $(SEARXNG_DIR) && python -m searx.webapp
