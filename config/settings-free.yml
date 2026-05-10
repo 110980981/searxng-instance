@@ -16,7 +16,7 @@ general:
   debug: false
 
 server:
-  port: 8888
+  port: 8080
   bind_address: "0.0.0.0"
   secret_key: "ultrasecretkey"  # 请通过 SEARXNG_SECRET 环境变量覆盖
   limiter: false
@@ -38,9 +38,9 @@ ui:
   hotkeys: default
 
 outgoing:
-  request_timeout: 3.0
-  pool_connections: 100
-  pool_maxsize: 20
+  request_timeout: 10.0
+  pool_connections: 200
+  pool_maxsize: 100
   enable_http2: true
 
 # 移除不适用的引擎（torrent、区域性引擎等），调优部分引擎
