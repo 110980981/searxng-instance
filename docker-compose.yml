@@ -39,7 +39,7 @@ services:
     ports:
       - "8889:8080"
     volumes:
-      - ./config/settings-paid.yml:/etc/searxng/settings.yml:ro
+      - ./config/.settings-paid.yml:/etc/searxng/settings.yml:ro
       - searxng-paid-data:/etc/searxng
     environment:
       - SEARXNG_BASE_URL=http://localhost:8889/

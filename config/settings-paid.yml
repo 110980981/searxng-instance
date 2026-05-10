@@ -178,6 +178,24 @@ engines:
     shortcut: fla
     api_key: ''  # 设置你的 Flickr API Key
 
+  # --- Serper.dev API (Google Search) ---
+  # API Key 通过 __SERPER_API_KEY__ 占位符注入，启动脚本会从 .env 读取替换
+  - name: serper
+    engine: json_engine
+    shortcut: srp
+    categories: [general, web]
+    method: POST
+    search_url: https://google.serper.dev/search
+    request_body: '{"q": "{query}"}'
+    headers:
+      X-API-KEY: __SERPER_API_KEY__
+      Content-Type: application/json
+    results_query: organic
+    url_query: link
+    title_query: title
+    content_query: snippet
+    timeout: 5.0
+
   # --- 搜索引擎 API ---
   - name: mojeek
     engine: mojeek

@@ -5,6 +5,7 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CONFIG_FILE="$SCRIPT_DIR/config/settings-paid.yml"
+RESOLVED_CONFIG="$SCRIPT_DIR/config/.settings-paid.yml"
 
 # 加载 .env 中的 API Key
 if [ -f "$SCRIPT_DIR/.env" ]; then
@@ -14,10 +15,14 @@ if [ -f "$SCRIPT_DIR/.env" ]; then
     set +a
 fi
 
+# 生成解析后的配置文件（替换占位符为真实 API Key）
+echo "[SearXNG Paid] 生成运行时配置..."
+sed "s/__SERPER_API_KEY__/${SERPER_API_KEY}/g" "$CONFIG_FILE" > "$RESOLVED_CONFIG"
+
 # 优先尝试 Docker 启动
 if command -v docker &> /dev/null; then
     echo "[SearXNG Paid] 通过 Docker 启动..."
-    export SEARXNG_SETTINGS_PATH="$CONFIG_FILE"
+    cd "$SCRIPT_DIR"
     docker compose --profile paid up -d
     echo "[SearXNG Paid] 启动完成: http://localhost:8889"
     exit 0
@@ -25,7 +30,7 @@ fi
 
 # 回退到本地 Python 启动
 echo "[SearXNG Paid] 通过本地 Python 启动..."
-export SEARXNG_SETTINGS_PATH="$CONFIG_FILE"
+export SEARXNG_SETTINGS_PATH="$RESOLVED_CONFIG"
 export SEARXNG_SECRET="${SEARXNG_SECRET:-ultrasecretkey}"
 
 SEARXNG_DIR="$SCRIPT_DIR/searxng"
@@ -36,4 +41,4 @@ if [ ! -d "$SEARXNG_DIR" ]; then
 fi
 
 cd "$SEARXNG_DIR"
-python -m searx.webapp
+exec python -m searx.webapp
