@@ -17,9 +17,12 @@ if exist "%SCRIPT_DIR%.env" (
     )
 )
 
-REM 替换 __SERPER_API_KEY__ 占位符，生成解析后的配置文件
+REM 替换 __SERPER_API_KEY__ 和 __SEARXNG_SECRET__ 占位符，生成解析后的配置文件
 echo [SearXNG Paid] 生成运行时配置...
-powershell -Command "$c=Get-Content '%CONFIG_FILE%' -Raw; $c=$c -replace '__SERPER_API_KEY__', $env:SERPER_API_KEY; Set-Content -Path '%RESOLVED_CONFIG%' -Value $c -Encoding UTF8"
+if not defined SEARXNG_SECRET (
+    for /f %%i in ('powershell -Command "[System.Convert]::ToBase64String((1..24|%%{[byte](Get-Random -Min 33 -Max 126)})) -replace '[^a-zA-Z0-9]',''"') do set SEARXNG_SECRET=%%i
+)
+powershell -Command "$c=Get-Content '%CONFIG_FILE%' -Raw; $c=$c -replace '__SERPER_API_KEY__', $env:SERPER_API_KEY; $c=$c -replace '__SEARXNG_SECRET__', $env:SEARXNG_SECRET; Set-Content -Path '%RESOLVED_CONFIG%' -Value $c -Encoding UTF8"
 
 if %ERRORLEVEL% neq 0 (
     echo [SearXNG Paid] 配置生成失败

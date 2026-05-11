@@ -16,9 +16,10 @@ if [ -f "$SCRIPT_DIR/.env" ]; then
     set +a
 fi
 
-# 生成解析后的配置文件（替换占位符为真实 API Key）
+# 生成解析后的配置文件（替换占位符为真实 API Key 和密钥）
 echo "[SearXNG Paid] 生成运行时配置..."
-sed "s/__SERPER_API_KEY__/${SERPER_API_KEY}/g" "$CONFIG_FILE" > "$RESOLVED_CONFIG"
+SEARXNG_SECRET="${SEARXNG_SECRET:-$(head -c 24 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9')}"
+sed -e "s/__SERPER_API_KEY__/${SERPER_API_KEY}/g" -e "s/__SEARXNG_SECRET__/${SEARXNG_SECRET}/g" "$CONFIG_FILE" > "$RESOLVED_CONFIG"
 
 # 修正端口（Docker 映射 8889:8080，本地直接使用 8889）
 sed -i "s/^  port: [0-9]*/  port: $PORT/" "$RESOLVED_CONFIG"

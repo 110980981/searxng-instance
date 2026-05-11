@@ -16,10 +16,16 @@ if [ -f "$SCRIPT_DIR/.env" ]; then
     set +a
 fi
 
+# 生成运行时配置（替换密钥占位符）
+echo "[SearXNG Free] 生成运行时配置..."
+SEARXNG_SECRET="${SEARXNG_SECRET:-$(head -c 24 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9')}"
+sed "s/__SEARXNG_SECRET__/${SEARXNG_SECRET}/g" "$CONFIG_FILE" > "$RESOLVED_CONFIG"
+sed -i "s/^  port: [0-9]*/  port: $PORT/" "$RESOLVED_CONFIG"
+
 # 优先尝试 Docker 启动
 if command -v docker &> /dev/null && docker info &>/dev/null; then
     echo "[SearXNG Free] 通过 Docker 启动..."
-    export SEARXNG_SETTINGS_PATH="$CONFIG_FILE"
+    cd "$SCRIPT_DIR"
     docker compose --profile free up -d
     echo "[SearXNG Free] 启动完成: http://localhost:$PORT"
     exit 0
@@ -27,12 +33,8 @@ fi
 
 # 回退到本地 Python 启动
 echo "[SearXNG Free] 通过本地 Python 启动..."
-cp "$CONFIG_FILE" "$RESOLVED_CONFIG"
-# 修正端口（Docker 映射 8888:8080，本地直接使用 8888）
-sed -i "s/^  port: [0-9]*/  port: $PORT/" "$RESOLVED_CONFIG"
 
 export SEARXNG_SETTINGS_PATH="$RESOLVED_CONFIG"
-export SEARXNG_SECRET="${SEARXNG_SECRET:-ultrasecretkey}"
 
 SEARXNG_DIR="$SCRIPT_DIR/searxng"
 if [ ! -d "$SEARXNG_DIR" ]; then

@@ -19,7 +19,7 @@ services:
     ports:
       - "8888:8080"
     volumes:
-      - ./config/settings-free.yml:/etc/searxng/settings.yml:ro
+      - ./config/.settings-free.yml:/etc/searxng/settings.yml:ro
       - searxng-free-data:/etc/searxng
     environment:
       - SEARXNG_BASE_URL=http://localhost:8888/

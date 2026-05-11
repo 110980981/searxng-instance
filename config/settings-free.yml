@@ -18,7 +18,7 @@ general:
 server:
   port: 8080
   bind_address: "0.0.0.0"
-  secret_key: "ultrasecretkey"  # 请通过 SEARXNG_SECRET 环境变量覆盖
+  secret_key: "__SEARXNG_SECRET__"  # 启动脚本自动替换，或通过环境变量覆盖
   limiter: false
   image_proxy: true
   method: POST
