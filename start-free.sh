@@ -28,4 +28,8 @@ if [ ! -d "$SEARXNG_DIR" ]; then
 fi
 
 cd "$SEARXNG_DIR"
-python -m searx.webapp
+PYTHON="$SCRIPT_DIR/venv/bin/python"
+if [ ! -f "$PYTHON" ]; then
+    PYTHON="python"
+fi
+exec "$PYTHON" -m searx.webapp
