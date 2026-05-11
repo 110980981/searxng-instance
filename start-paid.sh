@@ -6,6 +6,7 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CONFIG_FILE="$SCRIPT_DIR/config/settings-paid.yml"
 RESOLVED_CONFIG="$SCRIPT_DIR/config/.settings-paid.yml"
+PORT=8889
 
 # 加载 .env 中的 API Key
 if [ -f "$SCRIPT_DIR/.env" ]; then
@@ -19,12 +20,15 @@ fi
 echo "[SearXNG Paid] 生成运行时配置..."
 sed "s/__SERPER_API_KEY__/${SERPER_API_KEY}/g" "$CONFIG_FILE" > "$RESOLVED_CONFIG"
 
+# 修正端口（Docker 映射 8889:8080，本地直接使用 8889）
+sed -i "s/^  port: [0-9]*/  port: $PORT/" "$RESOLVED_CONFIG"
+
 # 优先尝试 Docker 启动
-if command -v docker &> /dev/null; then
+if command -v docker &> /dev/null && docker info &>/dev/null; then
     echo "[SearXNG Paid] 通过 Docker 启动..."
     cd "$SCRIPT_DIR"
     docker compose --profile paid up -d
-    echo "[SearXNG Paid] 启动完成: http://localhost:8889"
+    echo "[SearXNG Paid] 启动完成: http://localhost:$PORT"
     exit 0
 fi
 

@@ -5,19 +5,33 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CONFIG_FILE="$SCRIPT_DIR/config/settings-free.yml"
+RESOLVED_CONFIG="$SCRIPT_DIR/config/.settings-free.yml"
+PORT=8888
+
+# 加载 .env 中的环境变量
+if [ -f "$SCRIPT_DIR/.env" ]; then
+    echo "[SearXNG Free] 加载 .env 环境变量..."
+    set -a
+    source "$SCRIPT_DIR/.env"
+    set +a
+fi
 
 # 优先尝试 Docker 启动
-if command -v docker &> /dev/null; then
+if command -v docker &> /dev/null && docker info &>/dev/null; then
     echo "[SearXNG Free] 通过 Docker 启动..."
     export SEARXNG_SETTINGS_PATH="$CONFIG_FILE"
     docker compose --profile free up -d
-    echo "[SearXNG Free] 启动完成: http://localhost:8888"
+    echo "[SearXNG Free] 启动完成: http://localhost:$PORT"
     exit 0
 fi
 
 # 回退到本地 Python 启动
 echo "[SearXNG Free] 通过本地 Python 启动..."
-export SEARXNG_SETTINGS_PATH="$CONFIG_FILE"
+cp "$CONFIG_FILE" "$RESOLVED_CONFIG"
+# 修正端口（Docker 映射 8888:8080，本地直接使用 8888）
+sed -i "s/^  port: [0-9]*/  port: $PORT/" "$RESOLVED_CONFIG"
+
+export SEARXNG_SETTINGS_PATH="$RESOLVED_CONFIG"
 export SEARXNG_SECRET="${SEARXNG_SECRET:-ultrasecretkey}"
 
 SEARXNG_DIR="$SCRIPT_DIR/searxng"

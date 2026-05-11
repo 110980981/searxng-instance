@@ -212,11 +212,13 @@ engines:
   - name: yep images
     engine: yep
     disabled: false
+    shortcut: yepi
     categories: images
     search_type: images
 
   - name: yep news
     engine: yep
     disabled: false
+    shortcut: yepn
     categories: news
     search_type: news
